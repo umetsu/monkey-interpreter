@@ -32,3 +32,17 @@ const (
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
 )
+
+var keywords = map[string]TokenType{
+	"fn":  FUNCTION,
+	"let": LET,
+}
+
+// 渡された識別子がキーワードか確認する。
+// キーワードならそのTokenType定数を返し、そうでなければtoken.IDENTIFIERを返す
+func LookupIdentifier(identifier string) TokenType {
+	if tok, ok := keywords[identifier]; ok {
+		return tok
+	}
+	return IDENTIFIER
+}
