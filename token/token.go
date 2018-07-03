@@ -22,8 +22,12 @@ const (
 	BANG     = "!"
 	ASTERISK = "*"
 	SLASH    = "/"
+
 	LT       = "<"
 	GT       = ">"
+
+	EQ     = "=="
+	NOT_EQ = "!="
 
 	// デリミタ
 	COMMA     = ","
