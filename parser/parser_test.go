@@ -8,15 +8,17 @@ import (
 
 func TestLetStatements(t *testing.T) {
 	input := `
-let x = 5;
-let y = 10;
-let foobar = 838383;
+let x 5;
+let = 10;
+let 838383;
 `
 
 	lexer := lexer.New(input)
 	parser := New(lexer)
 
 	program := parser.ParseProgram()
+	checkParserErrors(t, parser)
+
 	if program == nil {
 		t.Fatalf("ParseProgram() returned nil")
 	}
@@ -38,6 +40,19 @@ let foobar = 838383;
 			return
 		}
 	}
+}
+
+func checkParserErrors(t *testing.T, parser *Parser) {
+	errors := parser.errors
+	if len(errors) == 0 {
+		return
+	}
+
+	t.Errorf("parser has %d errors", len(errors))
+	for _, message := range errors {
+		t.Errorf("parser error: %q", message)
+	}
+	t.FailNow()
 }
 
 func testLetStatement(t *testing.T, statement ast.Statement, name string) bool {

@@ -4,6 +4,7 @@ import (
 	"monkey-interpreter/lexer"
 	"monkey-interpreter/token"
 	"monkey-interpreter/ast"
+	"fmt"
 )
 
 type Parser struct {
@@ -11,16 +12,31 @@ type Parser struct {
 
 	currentToken token.Token
 	peekToken    token.Token
+
+	errors []string
 }
 
 func New(lexer *lexer.Lexer) *Parser {
-	parser := &Parser{lexer: lexer}
+	parser := &Parser{
+		lexer:  lexer,
+		errors: []string{},
+	}
 
 	// 2つトークンを読み込む。currentToken, peekTokenの両方がセットされる
 	parser.nextToken()
 	parser.nextToken()
 
 	return parser
+}
+
+func (parser *Parser) Errors() []string {
+	return parser.errors
+}
+
+func (parser *Parser) peekError(t token.TokenType) {
+	message := fmt.Sprintf("expected next token to be %s, got %s instead",
+		t, parser.peekToken.Type)
+	parser.errors = append(parser.errors, message)
 }
 
 func (parser *Parser) nextToken() {
@@ -78,6 +94,7 @@ func (parser *Parser) currentTokenIs(t token.TokenType) bool {
 }
 
 func (parser *Parser) peekTokenIs(t token.TokenType) bool {
+	fmt.Printf("peekTokenIs: %s, %s", parser.peekToken.Type, parser.peekToken.Literal)
 	return parser.peekToken.Type == t
 }
 
@@ -88,6 +105,7 @@ func (parser *Parser) expectPeek(t token.TokenType) bool {
 		parser.nextToken()
 		return true
 	} else {
+		parser.peekError(t)
 		return false
 	}
 }
